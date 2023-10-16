@@ -13,7 +13,6 @@ db = SQLAlchemy(app)
 app.app_context().push()
 
 
-
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 

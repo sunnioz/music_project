@@ -1,7 +1,7 @@
 from music import app,bcrypt,mail
-from flask import render_template, redirect,url_for,flash,get_flashed_messages
+from flask import render_template, redirect,url_for,flash,get_flashed_messages,jsonify
 from music.forms import RegisterForm,LoginForm,ResetRequestForm,ResetPasswordForm
-from music.models import User
+from music.models import User,Songs,Playlist
 from music import db
 from flask_login import login_user,logout_user,login_required
 from flask_mail import Message
@@ -37,7 +37,8 @@ def login_page():
             if attempted_user.username =='admin':
                 return redirect('/admin')
             login_user(attempted_user)
-            flash('Success! You just logged in as {attempted_user.usename}',category='success')
+            flash(f'Success! You just logged in as {attempted_user.username}',category='success')
+            return redirect(url_for('getsongs'))
         else:
             flash('Username and password are not match! Please try again', category='danger')
     return render_template('login.html',form = form)
@@ -86,3 +87,10 @@ def reset_token(token):
         flash('Password changed!')
         return redirect(url_for('login_page'))
     return render_template('changepass.html',form = form)
+
+@app.route('/getsongs',methods = ['GET'])
+@login_required
+def getsongs():
+    songs = Songs.query.all()
+    print(type(songs))
+    return render_template('home.html',songs = songs)
