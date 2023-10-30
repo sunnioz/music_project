@@ -34,9 +34,9 @@ def login_page():
         if attempted_user and attempted_user.check_password_correction(
             attempted_password = form.password.data
         ):
+            login_user(attempted_user)
             if attempted_user.username =='admin':
                 return redirect('/admin')
-            login_user(attempted_user)
             flash(f'Success! You just logged in as {attempted_user.username}',category='success')
             return redirect(url_for('getsongs'))
         else:
@@ -92,5 +92,4 @@ def reset_token(token):
 @login_required
 def getsongs():
     songs = Songs.query.all()
-    print(type(songs))
     return render_template('home.html',songs = songs)
